@@ -39,8 +39,7 @@
   '(progn
      (defun prelude-clojure-mode-defaults ()
        (subword-mode +1)
-       (run-hooks 'prelude-lisp-coding-hook))
-
+=
      (setq prelude-clojure-mode-hook 'prelude-clojure-mode-defaults)
 
      (add-hook 'clojure-mode-hook (lambda ()
@@ -60,6 +59,9 @@
 
      (add-hook 'cider-repl-mode-hook (lambda ()
                                        (run-hooks 'prelude-cider-repl-mode-hook)))))
+
+;;Auto save
+(add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 
 (provide 'prelude-clojure)
 

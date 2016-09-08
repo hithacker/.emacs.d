@@ -132,4 +132,83 @@ by Prelude.")
  ;; greet the use with some useful tip
  (run-at-time 5 nil 'prelude-tip-of-the-day))
 
+(load-theme 'leuven t)
+
+;; Make the scrolling smooth with macbook touchpad. Haven't tested mouse wheel because I don't own a mouse.
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
+(setq mouse-wheel-progressive-speed nil)
+
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;;(package-refresh-contents)
+
+;;Commenting out this hook as the gofmt errors buffer popping up every time and occuping half the space is irritating
+;;(add-hook 'before-save-hook #'gofmt-before-save)
+
+(require 'company)                                   ; load company mode
+(require 'company-go)                                ; load company mode go backend
+
+;;FiraCode setup
+(when (window-system)
+  (set-default-font "Fira Code"))
+(let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+               (36 . ".\\(?:>\\)")
+               (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+               (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+               (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+               (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+               (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+               (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+               (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+               (48 . ".\\(?:x[a-zA-Z]\\)")
+               (58 . ".\\(?:::\\|[:=]\\)")
+               (59 . ".\\(?:;;\\|;\\)")
+               (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+               (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+               (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+               (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+               (91 . ".\\(?:]\\)")
+               (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+               (94 . ".\\(?:=\\)")
+               (119 . ".\\(?:ww\\)")
+               (123 . ".\\(?:-\\)")
+               (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+               (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+               )
+             ))
+  (dolist (char-regexp alist)
+    (set-char-table-range composition-function-table (car char-regexp)
+                          `([,(cdr char-regexp) 0 font-shape-gstring]))))
+
+
+;;Mac gestures taken from http://kitchingroup.cheme.cmu.edu/blog/2014/08/31/Using-Mac-gestures-in-Emacs/
+(defvar *my-previous-buffer* t
+  "can we switch?")
+
+(defun my-previous-buffer ()
+  (interactive)
+  (message "custom prev: *my-previous-buffer*=%s" *my-previous-buffer*)
+  (when *my-previous-buffer*
+    (previous-buffer)
+    (setq *my-previous-buffer* nil)
+    (run-at-time "1 sec" nil (lambda ()
+                               (setq *my-previous-buffer* t)))))
+
+(defvar *my-next-buffer* t
+  "can we switch?")
+
+(defun my-next-buffer ()
+  (interactive)
+  (message "custom prev: *my-next-buffer*=%s" *my-next-buffer*)
+  (when *my-next-buffer*
+    (next-buffer)
+    (setq *my-next-buffer* nil)
+    (run-at-time "1 sec" nil (lambda ()
+                               (setq *my-next-buffer* t)))))
+
+;;Commenting out the key bindings for now because it not working well
+;;(global-set-key [triple-wheel-right] 'my-previous-buffer)
+;;(global-set-key [triple-wheel-left] 'my-next-buffer)
+
 ;;; init.el ends here
